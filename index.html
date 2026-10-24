@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Type Effectiveness Visualizer</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header>
+      <h1>Pokémon Type Matchup Tracker</h1>
+      <p>Selecione os tipos do seu Pokémon para ver suas imunidades, resistências, fraquezas combinadas e perfil individual.</p>
+    </header>
+
+    <!-- MAIN GLASS CONTAINER (LINEAR FLOW) -->
+    <main class="glass-card">
+      
+      <!-- SECTION 1: WHATS THE TYPE SELECTOR -->
+      <section>
+        <h2 class="section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--type-water);"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          Quais os tipos do seu Pokémon?
+        </h2>
+        
+        <div class="selector-card">
+          <!-- Primary Selection Row -->
+          <div class="selector-row">
+            <span class="selector-label">Tipo Primário</span>
+            <div class="badge-picker-grid" id="primary-picker-container" data-selected="false">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Secondary Selection Row -->
+          <div class="selector-row">
+            <span class="selector-label">Tipo Secundário</span>
+            <div class="badge-picker-grid" id="secondary-picker-container" data-selected="false">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: DEFENSIVE DUAL PROFILE CARD -->
+      <section id="defensive-profile-section">
+        <h2 class="section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--color-good);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Defesa Combinada (Dano Recebido)
+        </h2>
+
+        <div class="defensive-grid">
+          <!-- Combined Selected Badges -->
+          <div class="def-cell">
+            <span class="def-cell-title neutral-stat">Tipos do Pokémon</span>
+            <div class="def-badge-container" id="combined-badges-display" style="gap:8px;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Immunity (0x) -->
+          <div class="def-cell">
+            <span class="def-cell-title good-stat">0x Imunidade</span>
+            <div class="def-badge-container" id="def-mult-0">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- 0.25x (Double Resistance) -->
+          <div class="def-cell">
+            <span class="def-cell-title good-stat">0.25x Super Resiste</span>
+            <div class="def-badge-container" id="def-mult-0-25">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- 0.5x (Resistance) -->
+          <div class="def-cell">
+            <span class="def-cell-title good-stat">0.5x Resiste</span>
+            <div class="def-badge-container" id="def-mult-0-5">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- 2x (Weakness) -->
+          <div class="def-cell">
+            <span class="def-cell-title bad-stat">2x Fraqueza</span>
+            <div class="def-badge-container" id="def-mult-2">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- 4x (Double Weakness) -->
+          <div class="def-cell">
+            <span class="def-cell-title bad-stat">4x Super Fraqueza</span>
+            <div class="def-badge-container" id="def-mult-4">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: FILTERED INDIVIDUAL ROWS TABLE -->
+      <section>
+        <h2 class="section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--text-main);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+          Detalhamento Individual dos Tipos Filtrados
+        </h2>
+
+        <div class="effectiveness-sheet">
+          <!-- Column Labels (Desktop only) -->
+          <div class="sheet-header-grid">
+            <div class="header-col-title green-title">Defesa: Toma Menos Dano (Resiste)</div>
+            <div class="header-col-title red-title">Defesa: Toma Mais Dano (Fraqueza)</div>
+            <div class="header-col-title" style="color: var(--text-main);">Tipo de Referência</div>
+            <div class="header-col-title green-title">Ataque: Causa Mais Dano (Forte)</div>
+            <div class="header-col-title red-title">Ataque: Causa Menos Dano (Fraco)</div>
+          </div>
+
+          <!-- Dynamic Row List (Only active selected types) -->
+          <div id="effectiveness-rows-container" style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- LEGEND FOOTER -->
+      <footer class="legend-card">
+        <div class="legend-item">
+          <span class="legend-indicator" style="border:1px dashed #eab308; display:flex; align-items:center; justify-content:center; font-size:9px; background: rgba(10, 14, 23, 0.9);">⚡</span>
+          <span><strong>Imunidade (0x)</strong>: O dano é totalmente nulo.</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-indicator" style="background:var(--color-bad); opacity: 0.75;"></span>
+          <span><strong>Vermelho (Fraquezas / Resiste Fraco)</strong>: Dano desfavorável para o Pokémon.</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-indicator" style="background:var(--color-good); opacity: 0.75;"></span>
+          <span><strong>Verde (Resistências / Super Efetivo)</strong>: Dano favorável para o Pokémon.</span>
+        </div>
+      </footer>
+
+    </main>
+
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
